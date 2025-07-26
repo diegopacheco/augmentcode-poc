@@ -1,0 +1,9 @@
+Task 6: Some improvements
+add CORS middleware to backend
+call backend APIs from forms
+implement a page where we can list all feedbacks filter by member or team
+Add team management page where we list all peopel from a tem and we can remove the person from a team or delete the team.
+add a build-all.sh helper script for building the backend, frontend and Docker images
+show logo image at the top of Header use: logo-app.png
+improve frontend experince: for all pages, when some record is saved like when we give feedback or when we create a team or when we add a member or when we asign a member to a team I would like to see a TOST on the UI(not an alert) for 3s saying "sucess".
+make sure frotnend is fetch members, teams, and feedbacks from the API on startup

@@ -1,0 +1,6 @@
+Task 5: Create the database. You must have a top-level folder called db/, where you will have schema.sql, which contains the SQL commands to create the database and schema, along with the tables.
+Ensure you are using Docker and Docker Compose. I want a single Docker Compose file that sets up the backend, frontend, and MySQL 9, all running. Ensure that the schema is created when the MySQL Docker container boots or is ready.
+Each source code folder should have they own docker. /fontend/Dockerfile /backend/Dockerfile
+mysql should have a data folder mapped to a local dir db/mysql_data/ which also should be added to .gitignore. this when when the containers goes up and down we dont loose data.
+provide start.sh script to boot the full stack update README instructions
+also make sure to only do the PR when it's working 100%

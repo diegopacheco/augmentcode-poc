@@ -1,0 +1,18 @@
+Task 1: Create the frontend.
+
+I want a frontend app with(all using latest versions):
+
+bun
+typescript
+React
+I want to build a coaching application, where we should have the following pages:
+
+Add Team member(name, picture, email)
+Create Team(team name, team logo)
+Assign to Team (add person to team)
+Give feedback (to any team or person)
+Do not call the backend, make React components, and reuse as much as possible.
+
+Do not use comments; make the code as simple as possible.
+
+the frontend code must be in a frontend/ folder

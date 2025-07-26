@@ -1,0 +1,19 @@
+Task 2: Create the Backend.
+
+I want a backend app written in Go(all using the latest versions):
+
+gin gonic
+MySQL Database
+I want to build a coaching application, where we should have the following pages:
+
+Add Team member(name, picture, email)
+Create Team(team name, team logo)
+Assign to Team (add person to team)
+Give feedback (to any team or person)
+Expose REST endpoints and reuse as much as possible.
+
+Do not use comments; make the code as simple as possible.
+
+make a folder called backend, add all go code there. also make sure you have a script called build.sh to build the backend and run.sh to run the backend app.
+
+bckend code`must be in the folder /backend.
