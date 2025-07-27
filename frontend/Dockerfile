@@ -1,19 +1,19 @@
-# Frontend Dockerfile for React TypeScript app with Bun
-FROM oven/bun:1.0.15-alpine AS base
+# Frontend Dockerfile for React TypeScript app with Node.js
+FROM node:18-alpine AS base
 
 WORKDIR /app
 
 # Copy package files
-COPY package.json bun.lock* ./
+COPY package.json ./
 
 # Install dependencies
-RUN bun install --frozen-lockfile
+RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN bun run build
+RUN npm run build
 
 # Production stage with nginx
 FROM nginx:1.25-alpine AS production
