@@ -210,7 +210,7 @@ PROS
  * Was easy to install via IntelliJ plugin.
  * Was able to make it work and give tasks to the agent.
  * Uses Claude Sonnet 4.
- * Final result was good enough.
+ * Final result was good enough (took me 3h to get this done) used the trial and end with Used 12 of 125 this month.
 
 CONS
  * Did not use/detect my NVM and was trying to install node from scratch with brew.
