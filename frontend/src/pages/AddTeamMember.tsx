@@ -1,36 +1,43 @@
 import { useState } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Person } from '../types';
+import { useApp } from '../contexts/AppContext';
+import { useToast } from '../contexts/ToastContext';
+import { apiService } from '../services/api';
 
 export function AddTeamMember() {
-  const [people, setPeople] = useLocalStorage<Person[]>('people', []);
+  const { persons, refreshPersons } = useApp();
+  const { showSuccess, showError } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     picture: ''
   });
-  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email) {
-      setMessage('Name and email are required');
+      showError('Name and email are required');
       return;
     }
 
-    const newPerson: Person = {
-      id: Date.now().toString(),
-      name: formData.name,
-      email: formData.email,
-      picture: formData.picture || 'https://via.placeholder.com/150'
-    };
+    setIsSubmitting(true);
+    try {
+      await apiService.createPerson({
+        name: formData.name,
+        email: formData.email,
+        picture: formData.picture || 'https://via.placeholder.com/150'
+      });
 
-    setPeople([...people, newPerson]);
-    setFormData({ name: '', email: '', picture: '' });
-    setMessage('Team member added successfully!');
-    
-    setTimeout(() => setMessage(''), 3000);
+      await refreshPersons();
+      setFormData({ name: '', email: '', picture: '' });
+      showSuccess('Team member added successfully!');
+    } catch (error) {
+      console.error('Failed to create person:', error);
+      showError('Failed to add team member');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,12 +50,6 @@ export function AddTeamMember() {
   return (
     <div className="page">
       <h1>Add Team Member</h1>
-      
-      {message && (
-        <div className={message.includes('successfully') ? 'success' : 'error'}>
-          {message}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
@@ -87,20 +88,20 @@ export function AddTeamMember() {
           />
         </div>
 
-        <button type="submit" className="btn">
-          Add Team Member
+        <button type="submit" className="btn" disabled={isSubmitting}>
+          {isSubmitting ? 'Adding...' : 'Add Team Member'}
         </button>
       </form>
 
-      {people.length > 0 && (
+      {persons.length > 0 && (
         <div>
-          <h2>Team Members ({people.length})</h2>
+          <h2>Team Members ({persons.length})</h2>
           <div className="card-grid">
-            {people.map((person) => (
+            {persons.map((person) => (
               <div key={person.id} className="card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <img 
-                    src={person.picture} 
+                  <img
+                    src={person.picture || 'https://via.placeholder.com/150'}
                     alt={person.name}
                     className="avatar"
                     onError={(e) => {
@@ -110,7 +111,7 @@ export function AddTeamMember() {
                   <div>
                     <h3>{person.name}</h3>
                     <p>{person.email}</p>
-                    {person.teamId && <p>Team: {person.teamId}</p>}
+                    {person.team && <p>Team: {person.team.name}</p>}
                   </div>
                 </div>
               </div>

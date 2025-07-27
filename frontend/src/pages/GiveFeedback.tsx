@@ -1,49 +1,52 @@
 import { useState } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Person, Team, Feedback } from '../types';
+import { useApp } from '../contexts/AppContext';
+import { useToast } from '../contexts/ToastContext';
+import { apiService } from '../services/api';
 
 export function GiveFeedback() {
-  const [people] = useLocalStorage<Person[]>('people', []);
-  const [teams] = useLocalStorage<Team[]>('teams', []);
-  const [feedback, setFeedback] = useLocalStorage<Feedback[]>('feedback', []);
+  const { persons, teams, refreshFeedbacks } = useApp();
+  const { showSuccess, showError } = useToast();
   const [formData, setFormData] = useState({
     targetType: 'person' as 'person' | 'team',
     targetId: '',
     content: ''
   });
-  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.targetId || !formData.content) {
-      setMessage('Please select a target and provide feedback content');
+      showError('Please select a target and provide feedback content');
       return;
     }
 
-    const target = formData.targetType === 'person' 
-      ? people.find(p => p.id === formData.targetId)
-      : teams.find(t => t.id === formData.targetId);
+    const target = formData.targetType === 'person'
+      ? persons.find(p => p.id === parseInt(formData.targetId))
+      : teams.find(t => t.id === parseInt(formData.targetId));
 
     if (!target) {
-      setMessage('Invalid target selection');
+      showError('Invalid target selection');
       return;
     }
 
-    const newFeedback: Feedback = {
-      id: Date.now().toString(),
-      content: formData.content,
-      targetType: formData.targetType,
-      targetId: formData.targetId,
-      targetName: target.name,
-      createdAt: new Date().toISOString()
-    };
+    setIsSubmitting(true);
+    try {
+      await apiService.createFeedback({
+        content: formData.content,
+        target_type: formData.targetType,
+        target_id: parseInt(formData.targetId)
+      });
 
-    setFeedback([...feedback, newFeedback]);
-    setFormData({ targetType: 'person', targetId: '', content: '' });
-    setMessage('Feedback submitted successfully!');
-    
-    setTimeout(() => setMessage(''), 3000);
+      await refreshFeedbacks();
+      setFormData({ targetType: 'person', targetId: '', content: '' });
+      showSuccess('Feedback submitted successfully!');
+    } catch (error) {
+      console.error('Failed to create feedback:', error);
+      showError('Failed to submit feedback');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -55,25 +58,19 @@ export function GiveFeedback() {
     });
   };
 
-  const targets = formData.targetType === 'person' ? people : teams;
+  const targets = formData.targetType === 'person' ? persons : teams;
 
   return (
     <div className="page">
       <h1>Give Feedback</h1>
-      
-      {message && (
-        <div className={message.includes('successfully') ? 'success' : 'error'}>
-          {message}
-        </div>
-      )}
 
-      {people.length === 0 && teams.length === 0 && (
+      {persons.length === 0 && teams.length === 0 && (
         <div className="error">
           No people or teams available. Please add team members and create teams first.
         </div>
       )}
 
-      {(people.length > 0 || teams.length > 0) && (
+      {(persons.length > 0 || teams.length > 0) && (
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label htmlFor="targetType">Feedback Type</label>
@@ -103,7 +100,7 @@ export function GiveFeedback() {
               {targets.map((target) => (
                 <option key={target.id} value={target.id}>
                   {target.name}
-                  {formData.targetType === 'team' && ` (${(target as Team).members.length} members)`}
+                  {formData.targetType === 'team' && ` (${(target as any).members?.length || 0} members)`}
                 </option>
               ))}
             </select>
@@ -121,43 +118,10 @@ export function GiveFeedback() {
             />
           </div>
 
-          <button type="submit" className="btn">
-            Submit Feedback
+          <button type="submit" className="btn" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
           </button>
         </form>
-      )}
-
-      {feedback.length > 0 && (
-        <div>
-          <h2>Feedback History ({feedback.length})</h2>
-          <div className="card-grid">
-            {feedback
-              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-              .map((item) => (
-                <div key={item.id} className="card">
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <h3>{item.targetName}</h3>
-                      <span style={{ 
-                        background: item.targetType === 'person' ? '#e3f2fd' : '#f3e5f5',
-                        color: item.targetType === 'person' ? '#1976d2' : '#7b1fa2',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold'
-                      }}>
-                        {item.targetType.toUpperCase()}
-                      </span>
-                    </div>
-                    <p style={{ marginBottom: '0.5rem' }}>{item.content}</p>
-                    <p style={{ color: '#666', fontSize: '0.875rem' }}>
-                      {new Date(item.createdAt).toLocaleDateString()} at {new Date(item.createdAt).toLocaleTimeString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
       )}
     </div>
   );

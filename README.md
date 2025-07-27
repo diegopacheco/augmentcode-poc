@@ -199,7 +199,8 @@ CONS
  * I could not install the vscode version for linux, it just do not authenticate it get stuck. 
  * There is a plugin for InteliJ but the plugin still run commands on the terminal just like the same as github copilot.
  * Slow. Claude Code and opencode are much faster.
- 
+ * Task 6 it just forget to open the PR - I had to remember it. 
+
 ## All PRs are available here
 
 https://github.com/diegopacheco/augmentcode-poc/pulls?q=is%3Apr+is%3Aclosed
