@@ -2,6 +2,11 @@
 
 augmentcode-poc: POC using IDE agent from Augment Code.
 
+## Augment Code in Action
+
+Augment Code agent in action
+<img src="results/augment-agent-mode-in-action.png" width="800" />
+
 ## Augment Code Trade-off Analysis | Experience notes
 
 PROS
@@ -16,6 +21,7 @@ CONS
  * Augment code plugin: The font size in InteliJ is too small. Barely can read.
  * I could not install the vscode version for linux, it just do not authenticate it get stuck. 
  * There is a plugin for InteliJ but the plugin still run commands on the terminal just like the same as github copilot.
+ * Slow. Claude Code and opencode are much faster.
  
 ## All PRs are available here
 
