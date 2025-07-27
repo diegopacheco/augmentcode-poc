@@ -13,6 +13,8 @@ CONS
  * Did not add the node_modules to the .gitignore file.
  * So first PR augment code open had 5K+ files and github only support ~ 3k
  * I had to intervene and fix some of the agent mistakes.
+ * Augment code plugin: The font size in InteliJ is too small. Barely can read.
+ * I could not install the vscode version for linux, it just do not authenticate it get stuck. 
 
 ## All PRs are avaliable here
 
