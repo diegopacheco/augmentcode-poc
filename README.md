@@ -15,7 +15,8 @@ CONS
  * I had to intervene and fix some of the agent mistakes.
  * Augment code plugin: The font size in InteliJ is too small. Barely can read.
  * I could not install the vscode version for linux, it just do not authenticate it get stuck. 
-
+ * There is a plugin for InteliJ but the plugin still run commands on the terminal just like the same as github copilot.
+ 
 ## All PRs are available here
 
 https://github.com/diegopacheco/augmentcode-poc/pulls?q=is%3Apr+is%3Aclosed
