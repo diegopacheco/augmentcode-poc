@@ -6,11 +6,13 @@ augmentcode-poc: POC using IDE agent from Augment Code.
 
 PROS
  * Was easy to install via IntelliJ plugin.
+ * Was able to make it work and give tasks to the agent.
 
 CONS
  * Did not use/detect my NVM and was trying to install node from scratch with brew.
  * Did not add the node_modules to the .gitignore file.
  * So first PR augment code open had 5K+ files and github only support ~ 3k
+ * I had to intervene and fix some of the agent mistakes.
 
 ## Related POCs
 
