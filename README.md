@@ -189,6 +189,8 @@ Augment Code agent in action
 PROS
  * Was easy to install via IntelliJ plugin.
  * Was able to make it work and give tasks to the agent.
+ * Uses Claude Sonnet 4.
+ * Final result was good enough.
 
 CONS
  * Did not use/detect my NVM and was trying to install node from scratch with brew.
