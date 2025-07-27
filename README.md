@@ -14,6 +14,10 @@ CONS
  * So first PR augment code open had 5K+ files and github only support ~ 3k
  * I had to intervene and fix some of the agent mistakes.
 
+## All PRs are avaliable here
+
+https://github.com/diegopacheco/augmentcode-poc/pulls?q=is%3Apr+is%3Aclosed
+
 ## Related POCs
 
 OpenAI Codex POC https://github.com/diegopacheco/codex-poc
