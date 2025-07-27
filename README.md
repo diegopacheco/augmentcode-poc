@@ -2,6 +2,26 @@
 
 A full-stack coaching application built with React, Go, and MySQL. This application allows you to manage team members, create teams, assign people to teams, and provide feedback.
 
+## Result application
+
+Add team member <br/>
+<img src="results/1-result-app-add-member.png" width="800" /><br/>
+
+Create team <br/>
+<img src="results/2-result-app-create-team.png" width="800" /><br/>
+
+Assign person to team <br/>
+<img src="results/3-result-app-asign.png" width="800" /><br/>
+
+Give Feedback <br/>
+<img src="results/4-result-app-give-feedback.png" width="800" /><br/>
+
+View Feedbacks <br/>
+<img src="results/5-result-app-view-feedbacks.png" width="800" /><br/>
+
+Manage Team <br/>
+<img src="results/6-result-app-manage-team.png" width="800" /><br/>
+
 ## 🚀 Quick Start
 
 ### Prerequisites
