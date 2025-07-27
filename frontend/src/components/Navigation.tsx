@@ -34,11 +34,27 @@ export function Navigation() {
             </Link>
           </li>
           <li>
-            <Link 
-              to="/give-feedback" 
+            <Link
+              to="/give-feedback"
               className={isActive('/give-feedback') ? 'active' : ''}
             >
               Give Feedback
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/feedbacks"
+              className={isActive('/feedbacks') ? 'active' : ''}
+            >
+              View Feedbacks
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/team-management"
+              className={isActive('/team-management') ? 'active' : ''}
+            >
+              Team Management
             </Link>
           </li>
         </ul>

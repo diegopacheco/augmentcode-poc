@@ -1,35 +1,41 @@
 import { useState } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Team } from '../types';
+import { useApp } from '../contexts/AppContext';
+import { useToast } from '../contexts/ToastContext';
+import { apiService } from '../services/api';
 
 export function CreateTeam() {
-  const [teams, setTeams] = useLocalStorage<Team[]>('teams', []);
+  const { teams, refreshTeams } = useApp();
+  const { showSuccess, showError } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     logo: ''
   });
-  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name) {
-      setMessage('Team name is required');
+      showError('Team name is required');
       return;
     }
 
-    const newTeam: Team = {
-      id: Date.now().toString(),
-      name: formData.name,
-      logo: formData.logo || 'https://via.placeholder.com/100',
-      members: []
-    };
+    setIsSubmitting(true);
+    try {
+      await apiService.createTeam({
+        name: formData.name,
+        logo: formData.logo || 'https://via.placeholder.com/100'
+      });
 
-    setTeams([...teams, newTeam]);
-    setFormData({ name: '', logo: '' });
-    setMessage('Team created successfully!');
-    
-    setTimeout(() => setMessage(''), 3000);
+      await refreshTeams();
+      setFormData({ name: '', logo: '' });
+      showSuccess('Team created successfully!');
+    } catch (error) {
+      console.error('Failed to create team:', error);
+      showError('Failed to create team');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,12 +48,6 @@ export function CreateTeam() {
   return (
     <div className="page">
       <h1>Create Team</h1>
-      
-      {message && (
-        <div className={message.includes('successfully') ? 'success' : 'error'}>
-          {message}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
@@ -74,8 +74,8 @@ export function CreateTeam() {
           />
         </div>
 
-        <button type="submit" className="btn">
-          Create Team
+        <button type="submit" className="btn" disabled={isSubmitting}>
+          {isSubmitting ? 'Creating...' : 'Create Team'}
         </button>
       </form>
 
@@ -86,8 +86,8 @@ export function CreateTeam() {
             {teams.map((team) => (
               <div key={team.id} className="card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <img 
-                    src={team.logo} 
+                  <img
+                    src={team.logo || 'https://via.placeholder.com/100'}
                     alt={team.name}
                     className="logo"
                     onError={(e) => {
@@ -96,7 +96,7 @@ export function CreateTeam() {
                   />
                   <div>
                     <h3>{team.name}</h3>
-                    <p>{team.members.length} members</p>
+                    <p>{team.members?.length || 0} members</p>
                   </div>
                 </div>
               </div>

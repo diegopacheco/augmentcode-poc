@@ -37,6 +37,7 @@ func main() {
 			persons.GET("/:id", handlers.GetPerson)
 			persons.PUT("/:id", handlers.UpdatePerson)
 			persons.DELETE("/:id", handlers.DeletePerson)
+			persons.POST("/:id/remove-from-team", handlers.RemoveFromTeam)
 		}
 
 		teams := api.Group("/teams")

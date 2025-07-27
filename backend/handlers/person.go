@@ -133,3 +133,30 @@ func AssignToTeam(c *gin.Context) {
 
 	c.JSON(http.StatusOK, person)
 }
+
+func RemoveFromTeam(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid person ID"})
+		return
+	}
+
+	var person models.Person
+	if err := database.GetDB().First(&person, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Person not found"})
+		return
+	}
+
+	person.TeamID = nil
+	if err := database.GetDB().Save(&person).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove person from team"})
+		return
+	}
+
+	if err := database.GetDB().Preload("Team").First(&person, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch updated person"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Person removed from team successfully", "person": person})
+}

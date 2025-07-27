@@ -1,65 +1,58 @@
 import { useState } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { Person, Team } from '../types';
+import { useApp } from '../contexts/AppContext';
+import { useToast } from '../contexts/ToastContext';
+import { apiService } from '../services/api';
 
 export function AssignToTeam() {
-  const [people, setPeople] = useLocalStorage<Person[]>('people', []);
-  const [teams, setTeams] = useLocalStorage<Team[]>('teams', []);
+  const { persons, teams, refreshPersons } = useApp();
+  const { showSuccess, showError } = useToast();
   const [selectedPersonId, setSelectedPersonId] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState('');
-  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedPersonId || !selectedTeamId) {
-      setMessage('Please select both a person and a team');
+      showError('Please select both a person and a team');
       return;
     }
 
-    const person = people.find(p => p.id === selectedPersonId);
-    const team = teams.find(t => t.id === selectedTeamId);
+    const person = persons.find(p => p.id === parseInt(selectedPersonId));
+    const team = teams.find(t => t.id === parseInt(selectedTeamId));
 
     if (!person || !team) {
-      setMessage('Invalid selection');
+      showError('Invalid selection');
       return;
     }
 
-    const updatedPeople = people.map(p => 
-      p.id === selectedPersonId 
-        ? { ...p, teamId: selectedTeamId }
-        : p
-    );
+    setIsSubmitting(true);
+    try {
+      await apiService.assignToTeam({
+        person_id: parseInt(selectedPersonId),
+        team_id: parseInt(selectedTeamId)
+      });
 
-    const updatedTeams = teams.map(t => 
-      t.id === selectedTeamId 
-        ? { ...t, members: [...t.members.filter(id => id !== selectedPersonId), selectedPersonId] }
-        : { ...t, members: t.members.filter(id => id !== selectedPersonId) }
-    );
-
-    setPeople(updatedPeople);
-    setTeams(updatedTeams);
-    setSelectedPersonId('');
-    setSelectedTeamId('');
-    setMessage(`${person.name} assigned to ${team.name} successfully!`);
-    
-    setTimeout(() => setMessage(''), 3000);
+      await refreshPersons();
+      setSelectedPersonId('');
+      setSelectedTeamId('');
+      showSuccess(`${person.name} assigned to ${team.name} successfully!`);
+    } catch (error) {
+      console.error('Failed to assign to team:', error);
+      showError('Failed to assign person to team');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const unassignedPeople = people.filter(p => !p.teamId);
-  const assignedPeople = people.filter(p => p.teamId);
+  const unassignedPeople = persons.filter(p => !p.team_id);
+  const assignedPeople = persons.filter(p => p.team_id);
 
   return (
     <div className="page">
       <h1>Assign to Team</h1>
-      
-      {message && (
-        <div className={message.includes('successfully') ? 'success' : 'error'}>
-          {message}
-        </div>
-      )}
 
-      {people.length === 0 && (
+      {persons.length === 0 && (
         <div className="error">
           No team members available. Please add team members first.
         </div>
@@ -71,7 +64,7 @@ export function AssignToTeam() {
         </div>
       )}
 
-      {people.length > 0 && teams.length > 0 && (
+      {persons.length > 0 && teams.length > 0 && (
         <form onSubmit={handleSubmit} className="form">
           <div className="form-group">
             <label htmlFor="person">Select Person</label>
@@ -82,9 +75,9 @@ export function AssignToTeam() {
               required
             >
               <option value="">Choose a person...</option>
-              {people.map((person) => (
+              {persons.map((person) => (
                 <option key={person.id} value={person.id}>
-                  {person.name} {person.teamId ? `(Currently in team)` : '(Unassigned)'}
+                  {person.name} {person.team_id ? `(Currently in ${person.team?.name})` : '(Unassigned)'}
                 </option>
               ))}
             </select>
@@ -101,14 +94,14 @@ export function AssignToTeam() {
               <option value="">Choose a team...</option>
               {teams.map((team) => (
                 <option key={team.id} value={team.id}>
-                  {team.name} ({team.members.length} members)
+                  {team.name} ({team.members?.length || 0} members)
                 </option>
               ))}
             </select>
           </div>
 
-          <button type="submit" className="btn">
-            Assign to Team
+          <button type="submit" className="btn" disabled={isSubmitting}>
+            {isSubmitting ? 'Assigning...' : 'Assign to Team'}
           </button>
         </form>
       )}
@@ -120,8 +113,8 @@ export function AssignToTeam() {
             {unassignedPeople.map((person) => (
               <div key={person.id} className="card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <img 
-                    src={person.picture} 
+                  <img
+                    src={person.picture || 'https://via.placeholder.com/150'}
                     alt={person.name}
                     className="avatar"
                     onError={(e) => {
@@ -144,28 +137,25 @@ export function AssignToTeam() {
         <div>
           <h2>Assigned People ({assignedPeople.length})</h2>
           <div className="card-grid">
-            {assignedPeople.map((person) => {
-              const team = teams.find(t => t.id === person.teamId);
-              return (
-                <div key={person.id} className="card">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <img 
-                      src={person.picture} 
-                      alt={person.name}
-                      className="avatar"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://via.placeholder.com/150';
-                      }}
-                    />
-                    <div>
-                      <h3>{person.name}</h3>
-                      <p>{person.email}</p>
-                      <p style={{ color: '#007bff' }}>Team: {team?.name}</p>
-                    </div>
+            {assignedPeople.map((person) => (
+              <div key={person.id} className="card">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <img
+                    src={person.picture || 'https://via.placeholder.com/150'}
+                    alt={person.name}
+                    className="avatar"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/150';
+                    }}
+                  />
+                  <div>
+                    <h3>{person.name}</h3>
+                    <p>{person.email}</p>
+                    <p style={{ color: '#007bff' }}>Team: {person.team?.name}</p>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       )}
