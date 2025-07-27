@@ -16,7 +16,7 @@ CONS
  * Augment code plugin: The font size in InteliJ is too small. Barely can read.
  * I could not install the vscode version for linux, it just do not authenticate it get stuck. 
 
-## All PRs are avaliable here
+## All PRs are available here
 
 https://github.com/diegopacheco/augmentcode-poc/pulls?q=is%3Apr+is%3Aclosed
 
