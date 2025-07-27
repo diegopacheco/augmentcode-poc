@@ -2,6 +2,15 @@
 
 augmentcode-poc: POC using IDE agent from Augment Code.
 
+## Augment Code Trade-off Analysis | Experience notes
+
+PROS
+ * Was easy to install via IntelliJ plugin.
+
+CONS
+ * Did not use/detect my NVM and was trying to install node from scratch with brew.
+ * Did not add the node_modules to the .gitignore file.
+
 ## Related POCs
 
 OpenAI Codex POC https://github.com/diegopacheco/codex-poc
