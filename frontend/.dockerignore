@@ -1,0 +1,42 @@
+# Ignore node modules
+node_modules/
+
+# Ignore development files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore test files
+src/**/*.test.*
+src/**/*.spec.*
+__tests__/
+coverage/
+
+# Ignore build artifacts (except dist for production)
+.vite/
+
+# Ignore documentation
+README*.md
+*.md
+
+# Ignore git
+.git
+.gitignore
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore temporary files
+tmp/
+temp/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db

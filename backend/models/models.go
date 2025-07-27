@@ -6,9 +6,9 @@ import (
 
 type Person struct {
 	ID       uint   `json:"id" gorm:"primaryKey"`
-	Name     string `json:"name" gorm:"not null"`
-	Email    string `json:"email" gorm:"unique;not null"`
-	Picture  string `json:"picture"`
+	Name     string `json:"name" gorm:"type:varchar(255);not null"`
+	Email    string `json:"email" gorm:"type:varchar(255);unique;not null"`
+	Picture  string `json:"picture" gorm:"type:text"`
 	TeamID   *uint  `json:"team_id"`
 	Team     *Team  `json:"team,omitempty" gorm:"foreignKey:TeamID"`
 	CreatedAt time.Time `json:"created_at"`
@@ -17,8 +17,8 @@ type Person struct {
 
 type Team struct {
 	ID        uint     `json:"id" gorm:"primaryKey"`
-	Name      string   `json:"name" gorm:"not null"`
-	Logo      string   `json:"logo"`
+	Name      string   `json:"name" gorm:"type:varchar(255);not null"`
+	Logo      string   `json:"logo" gorm:"type:text"`
 	Members   []Person `json:"members,omitempty" gorm:"foreignKey:TeamID"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -26,10 +26,10 @@ type Team struct {
 
 type Feedback struct {
 	ID         uint   `json:"id" gorm:"primaryKey"`
-	Content    string `json:"content" gorm:"not null"`
-	TargetType string `json:"target_type" gorm:"not null"`
+	Content    string `json:"content" gorm:"type:text;not null"`
+	TargetType string `json:"target_type" gorm:"type:varchar(50);not null"`
 	TargetID   uint   `json:"target_id" gorm:"not null"`
-	TargetName string `json:"target_name" gorm:"not null"`
+	TargetName string `json:"target_name" gorm:"type:varchar(255);not null"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
