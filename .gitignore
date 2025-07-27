@@ -1,6 +1,8 @@
 # Database data directory
 db/mysql_data/
 
+backend/bin/coaching-backend
+
 # Node modules
 .idea/
 dist/
