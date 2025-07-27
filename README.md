@@ -10,6 +10,7 @@ PROS
 CONS
  * Did not use/detect my NVM and was trying to install node from scratch with brew.
  * Did not add the node_modules to the .gitignore file.
+ * So first PR augment code open had 5K+ files and github only support ~ 3k
 
 ## Related POCs
 
