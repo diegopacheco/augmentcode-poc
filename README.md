@@ -2,6 +2,8 @@
 
 A full-stack coaching application built with React, Go, and MySQL. This application allows you to manage team members, create teams, assign people to teams, and provide feedback.
 
+Built with Augument Code: https://www.augmentcode.com/
+
 ## Result application
 
 Add team member <br/>
