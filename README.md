@@ -235,3 +235,4 @@ https://github.com/diegopacheco/augmentcode-poc/pulls?q=is%3Apr+is%3Aclosed
 * Cursor POC https://github.com/diegopacheco/docker-cleanup
 * Gemini-cli POC: https://github.com/diegopacheco/gemini-cli-poc
 * Sketch POC: https://github.com/diegopacheco/sketch-dev-poc
+* Opencode POC: https://github.com/diegopacheco/opencode-poc
