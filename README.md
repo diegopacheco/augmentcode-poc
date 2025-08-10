@@ -238,3 +238,4 @@ https://github.com/diegopacheco/augmentcode-poc/pulls?q=is%3Apr+is%3Aclosed
 * Gemini-cli POC: https://github.com/diegopacheco/gemini-cli-poc
 * Sketch POC: https://github.com/diegopacheco/sketch-dev-poc
 * Opencode POC: https://github.com/diegopacheco/opencode-poc
+* Cursor Agent POC: https://github.com/diegopacheco/cursor-agent-gpt5-poc
